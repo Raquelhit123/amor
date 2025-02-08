@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proposta de Casamento</title>
+    <style>
+        body {
+            background-color: #FFB6C1;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        #sim, #nao {
+            font-size: 20px;
+            padding: 10px 20px;
+            margin: 10px;
+            background-color: red;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        #sim {
+            width: 100px;
+            height: 50px;
+        }
+
+        #nao {
+            width: 100px;
+            height: 50px;
+        }
+
+        #pergunta {
+            font-size: 30px;
+            margin-top: 30px;
+        }
+
+        .coracao {
+            font-size: 20px;
+            color: red;
+            position: absolute;
+            animation: flutuar 2s infinite;
+        }
+
+        @keyframes flutuar {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-30px); }
+            100% { transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="pergunta">Você me ama?</div>
+    <button id="sim">Sim</button>
+    <button id="nao">Não</button>
+
+    <script>
+        let primeiroCliqueNao = true;
+        let cliquesNao = 0;
+        let coracoes = [];
+
+        const botaoSim = document.getElementById('sim');
+        const botaoNao = document.getElementById('nao');
+        const pergunta = document.getElementById('pergunta');
+
+        // Função para aumentar o tamanho do botão "Sim"
+        function aumentarBotao() {
+            if (cliquesNao < 5) {
+                let larguraAtual = botaoSim.offsetWidth;
+                let alturaAtual = botaoSim.offsetHeight;
+
+                // Aumenta o tamanho do botão "Sim" apenas metade de seu tamanho atual
+                let larguraNova = larguraAtual + (larguraAtual / 2);
+                let alturaNova = alturaAtual + (alturaAtual / 2);
+
+                // Atualiza o tamanho do botão
+                botaoSim.style.width = `${larguraNova}px`;
+                botaoSim.style.height = `${alturaNova}px`;
+
+                // Reposiciona o botão "Sim" um pouco à esquerda
+                centralizarBotaoSim();
+            }
+        }
+
+        // Função para centralizar o botão "Sim"
+        function centralizarBotaoSim() {
+            const larguraTela = window.innerWidth;
+            const alturaTela = window.innerHeight;
+            const larguraBotao = botaoSim.offsetWidth;
+            const alturaBotao = botaoSim.offsetHeight;
+
+            const x = (larguraTela - larguraBotao) / 2 - 50;  // Desloca um pouco para a esquerda
+            const y = (alturaTela - alturaBotao) / 2;
+
+            botaoSim.style.position = 'absolute';
+            botaoSim.style.left = `${x}px`;
+            botaoSim.style.top = `${y}px`;
+        }
+
+        // Função para mostrar os corações flutuando
+        function mostrarCorações() {
+            if (coracoes.length > 0) return;  // Se os corações já estão visíveis, não faz nada
+
+            // Cria os corações
+            for (let i = 0; i < 10; i++) {
+                let coracao = document.createElement('div');
+                coracao.classList.add('coracao');
+                coracao.textContent = '❤️';
+                coracao.style.left = `${Math.random() * window.innerWidth}px`;
+                coracao.style.top = `${Math.random() * window.innerHeight}px`;
+                document.body.appendChild(coracao);
+                coracoes.push(coracao);
+            }
+        }
+
+        // Função chamada quando o botão "Não" é clicado
+        function clicouNao() {
+            if (primeiroCliqueNao) {
+                primeiroCliqueNao = false;  // Não permite que o botão "Sim" cresça novamente
+            }
+
+            cliquesNao++;  // Aumenta o contador de cliques no botão "Não"
+            aumentarBotao();  // Chama a função para aumentar o tamanho do botão "Sim"
+
+            esconderCorações();  // Chama a função para esconder os corações
+            reposicionarBotaoNao();  // Reposiciona o botão "Não"
+        }
+
+        // Função chamada quando o botão "Sim" é clicado
+        function clicouSim() {
+            mostrarCorações();  // Chama a função para mostrar os corações
+        }
+
+        // Função para esconder os corações
+        function esconderCorações() {
+            coracoes.forEach(coracao => {
+                coracao.remove();  // Remove cada coração
+            });
+            coracoes = [];  // Limpa a lista de corações
+        }
+
+        // Função para reposicionar o botão "Não"
+        function reposicionarBotaoNao() {
+            const larguraTela = window.innerWidth;
+            const alturaTela = window.innerHeight;
+
+            // Gera novas posições aleatórias para o botão "Não"
+            const novaX = Math.random() * (larguraTela - botaoNao.offsetWidth);
+            const novaY = Math.random() * (alturaTela - botaoNao.offsetHeight);
+
+            botaoNao.style.position = 'absolute';
+            botaoNao.style.left = `${novaX}px`;
+            botaoNao.style.top = `${novaY}px`;
+        }
+
+        // Eventos de clique
+        botaoNao.addEventListener('click', clicouNao);
+        botaoSim.addEventListener('click', clicouSim);
+    </script>
+
+</body>
+</html>
